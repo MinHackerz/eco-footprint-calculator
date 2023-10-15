@@ -4,39 +4,52 @@
     <title>Eco-Footprint Calculator</title>
     <style>
         body {
+            background: linear-gradient(to bottom, #6495ED, #F0E68C);
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
+
         .container {
             max-width: 600px;
-            margin: 0 auto;
             padding: 20px;
-            background-color: #ffffff;
+            background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+
         h1 {
             color: #333;
+            font-size: 24px;
         }
+
         label {
             display: block;
             margin-top: 10px;
+            font-size: 14px;
         }
+
         input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 14px;
         }
+
         select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 14px;
         }
+
         button {
             background-color: #0077cc;
             color: #fff;
@@ -44,12 +57,32 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
+
         button:hover {
             background-color: #0055aa;
         }
+
         #results {
             margin-top: 20px;
+            font-size: 14px;
+        }
+
+        #copy-button {
+            background-color: #0077cc;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        #copy-button:hover {
+            background-color: #0055aa;
         }
     </style>
 </head>
@@ -90,6 +123,7 @@
         </form>
         
         <div id="results"></div>
+        <button type="button" id="copy-button">Copy Results</button>
     </div>
 
     <script>
@@ -101,45 +135,62 @@
             const vehicle_type = document.getElementById("vehicle_type").value;
             const commute_distance = parseFloat(document.getElementById("commute_distance").value);
             const meat_choice = document.getElementById("meat_choice").value;
-            
-            // Calculate carbon emissions
-            let carbon_footprint = 0;
-            if (vehicle_type === "car") {
-                carbon_footprint = commute_distance * 2.3 * occupants;
-            }
-            
-            // Calculate meat consumption
-            let meat_consumption = 0;
-            if (meat_choice === "vegan") {
-                meat_consumption = 0;
-            }
-            else if (meat_choice === "vegetarian") {
-                meat_consumption = 250 / 2;
-            }
-            else {
-                meat_consumption = 250;
-            }
-            
-            // Calculate water consumption
-            const water_consumption = 80 * occupants;
 
-            // Advanced calculations based on home size
-            if (home_size > 150) {
-                carbon_footprint += 1.5;
-            }
-            else {
-                carbon_footprint -= 0.5;
-            }
+            if (name && location && occupants && home_size && vehicle_type && commute_distance && meat_choice) {
+                document.getElementById("copy-button").style.display = "block";
 
-            // Display the results
+                let carbon_footprint = 0;
+                if (vehicle_type === "car") {
+                    carbon_footprint = commute_distance * 2.3 * occupants;
+                }
+
+                let meat_consumption = 0;
+                if (meat_choice === "vegan") {
+                    meat_consumption = 0;
+                }
+                else if (meat_choice === "vegetarian") {
+                    meat_consumption = 250 / 2;
+                }
+                else {
+                    meat_consumption = 250;
+                }
+
+                const water_consumption = 80 * occupants;
+
+                if (home_size > 150) {
+                    carbon_footprint += 1.5;
+                }
+                else {
+                    carbon_footprint -= 0.5;
+                }
+
+                const resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = `
+                    <h2>Results for ${name}</h2>
+                    <p>Location: ${location}</p>
+                    <p>Carbon Footprint: ${carbon_footprint.toFixed(2)} kg CO2</p>
+                    <p>Meat Consumption: ${meat_consumption.toFixed(2)} grams/day</p>
+                    <p>Water Consumption: ${water_consumption.toFixed(2)} liters/day</p>
+                `;
+            } else {
+                alert("Please fill in all the required fields before calculating.");
+            }
+        });
+
+        document.getElementById("copy-button").addEventListener("click", function() {
             const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = `
-                <h2>Results for ${name}</h2>
-                <p>Location: ${location}</p>
-                <p>Carbon Footprint: ${carbon_footprint.toFixed(2)} kg CO2</p>
-                <p>Meat Consumption: ${meat_consumption.toFixed(2)} grams/day</p>
-                <p>Water Consumption: ${water_consumption.toFixed(2)} liters/day</p>
-            `;
+            const resultsText = resultsDiv.innerText;
+            const attribution = "Eco-footprint calculator by https://github.com/MinHackerz";
+            const textToCopy = resultsText + "\n\n" + attribution;
+
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            alert("Results and attribution copied to the clipboard.");
         });
     </script>
 </body>
