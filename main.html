@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eco-Footprint Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #0077cc;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0055aa;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eco-Footprint Calculator</h1>
+        <form id="eco-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            
+            <label for="location">Location:</label>
+            <input type="text" id="location" required>
+            
+            <label for="occupants">Number of People in Household:</label>
+            <input type="text" id="occupants" required>
+            
+            <label for="home_size">Home Size (square feet):</label>
+            <input type="text" id="home_size" required>
+            
+            <label for="vehicle_type">Primary Vehicle Type:</label>
+            <select id="vehicle_type" required>
+                <option value="car">Car</option>
+                <option value="bike">Bike</option>
+                <option value="public_transit">Public Transit</option>
+            </select>
+            
+            <label for="commute_distance">Daily Commute Distance (kilometers):</label>
+            <input type="text" id="commute_distance" required>
+            
+            <label for="meat_choice">Diet:</label>
+            <select id="meat_choice" required>
+                <option value="vegan">Vegan</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="omnivore">Omnivore</option>
+            </select>
+            
+            <button type="button" id="calculateBtn">Calculate</button>
+        </form>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById("calculateBtn").addEventListener("click", function() {
+            const name = document.getElementById("name").value;
+            const location = document.getElementById("location").value;
+            const occupants = parseInt(document.getElementById("occupants").value);
+            const home_size = parseFloat(document.getElementById("home_size").value);
+            const vehicle_type = document.getElementById("vehicle_type").value;
+            const commute_distance = parseFloat(document.getElementById("commute_distance").value);
+            const meat_choice = document.getElementById("meat_choice").value;
+            
+            // Calculate carbon emissions
+            let carbon_footprint = 0;
+            if (vehicle_type === "car") {
+                carbon_footprint = commute_distance * 2.3 * occupants;
+            }
+            
+            // Calculate meat consumption
+            let meat_consumption = 0;
+            if (meat_choice === "vegan") {
+                meat_consumption = 0;
+            }
+            else if (meat_choice === "vegetarian") {
+                meat_consumption = 250 / 2;
+            }
+            else {
+                meat_consumption = 250;
+            }
+            
+            // Calculate water consumption
+            const water_consumption = 80 * occupants;
+
+            // Advanced calculations based on home size
+            if (home_size > 150) {
+                carbon_footprint += 1.5;
+            }
+            else {
+                carbon_footprint -= 0.5;
+            }
+
+            // Display the results
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = `
+                <h2>Results for ${name}</h2>
+                <p>Location: ${location}</p>
+                <p>Carbon Footprint: ${carbon_footprint.toFixed(2)} kg CO2</p>
+                <p>Meat Consumption: ${meat_consumption.toFixed(2)} grams/day</p>
+                <p>Water Consumption: ${water_consumption.toFixed(2)} liters/day</p>
+            `;
+        });
+    </script>
+</body>
+</html>
